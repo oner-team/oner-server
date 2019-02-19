@@ -1,0 +1,82 @@
+#!/usr/bin/env node
+
+const Koa = require('koa')
+const Router = require('koa-router')
+const config = require('./common/config')
+const logger = require('./common/log')
+
+
+// 微服务系列
+const msApiProxy = require('./micro-service/apiProxy')
+const msAuthorize = require('./micro-service/authorize')
+const msCommonPage = require('./micro-service/common-page')
+const msCoustomPlugins = require('./micro-service/custom-plugins')
+const msFs = require('./micro-service/fs')
+const msMock = require('./micro-service/mock')
+const msMarkdown = require('./micro-service/markdown')
+const msMaster = require('./micro-service/master')
+const msRender = require('./micro-service/render')
+const msStatic = require('./micro-service/static')
+const msWS = require('./micro-service/webSocket')
+
+logger.info('')
+logger.info('~~~~~~~~ 服务开始启动 ~~~~~~~~')
+logger.info('')
+
+const app = new Koa()
+const router = new Router()
+const server = require('http').createServer(app.callback())
+
+// 放在最前面的中间件
+msMaster.applyBefore(app, router, config, server)
+
+// 对 mock 数据的支持
+msMock(app)
+
+// 对 markdown 的解析支持
+msMarkdown(app)
+
+// 404 无权限 低版本ie ... 的支持
+msCommonPage(app)
+
+// 鉴权
+msAuthorize(app)
+
+// 配合 oner-socket 组件，实现后端推送
+msWS(app)
+
+// 文件上传和下载支持
+msFs(app)
+
+// 静态资源服务
+msStatic(app)
+
+// 引入客户自定义插件
+msCoustomPlugins(app)
+
+// 接口转发代理
+msApiProxy(app)
+
+// 放在最后面的中间件
+msMaster.applyBehind(app)
+
+// 渲染页面
+msRender(app)
+
+
+// 启动服务：本地环境/私有化环境
+if (config('client.isDevelopment') || config('server.type') === 'private') {
+  
+  const PORT = config('server.port')
+  server.listen(PORT)
+  logger.info('')
+  logger.info(`~~~~~~~~ 服务启动成功: http://127.0.0.1:${PORT} ~~~~~~~~`)
+  logger.info('')
+
+// 启动服务：测试、线上环境
+} else {
+  server.listen(`${config('client.dir')}.sock`, () => {
+    logger.info('~~~~~~~~ 服务启动成功 ~~~~~~~~')
+    process.send('ready')
+  })
+}
