@@ -1,5 +1,5 @@
 {
-  "name": "@dtwave/oner-server",
+  "name": "oner-server",
   "version": "3.2.0",
   "description": "基于koa2的前端node层",
   "main": "index.js",
