@@ -70,7 +70,7 @@ const begin = ({ isPrivate, NODE_ENV }) => {
     return shell(order)
   }
 
-  const npmInstall = () => shell('npm i --registry=http://r.dtwave-inc.com --production', {
+  const npmInstall = () => shell('npm i --production', {
     cwd: `${rootPath}/${folderName}`,
   })
 
