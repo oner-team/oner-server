@@ -1,6 +1,6 @@
 {
   "name": "oner-server",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "基于koa2的前端node层",
   "main": "index.js",
   "scripts": {

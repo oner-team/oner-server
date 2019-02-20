@@ -11,7 +11,7 @@ const DEBUG = process.env.DEBUG
 // 获取项目本地配置
 // 只要不是`client`端开发环境，就都是部署环境：测试，预发，生产
 // TODO
-const CLIENT_DIR = ONER_SERVER_ENV === 'development' ? process.cwd() : path.join(__dirname, '../../../..')
+const CLIENT_DIR = ONER_SERVER_ENV === 'development' ? process.cwd() : path.join(__dirname, '../../..')
 const packagePath = `${CLIENT_DIR}/package.json`
 
 // 项目的`package.json`文件
