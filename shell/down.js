@@ -21,7 +21,7 @@ const donwResource = async resource => {
     resource = `http:${resource}`
   }
   const { pathname, hostname } = urlParse(resource)
-  if (!hostname) return // 剔除 类似 common.js
+  if (!hostname || !pathname) return // 剔除 类似 common.js
   const dirs = pathname.split('/')
   const fileName = dirs.splice(-1).toString()
   const saveDirPath = path.join(STATICPATH, ...dirs)
